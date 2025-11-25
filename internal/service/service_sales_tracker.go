@@ -15,50 +15,50 @@ func (s *Service) Create(ctx context.Context, t *model.Transaction) (int, error)
 	if t.Category == "" {
 		return 0, errors.New("category is required")
 	}
-	return s.storage.Create(ctx, t)
+	return s.storageCRUD.Create(ctx, t)
 }
 
 func (s *Service) GetByID(ctx context.Context, id int) (*model.Transaction, error) {
 	if id <= 0 {
 		return nil, errors.New("invalid id")
 	}
-	return s.storage.GetByID(ctx, id)
+	return s.storageCRUD.GetByID(ctx, id)
 }
 
 func (s *Service) GetAll(ctx context.Context) ([]model.Transaction, error) {
-	return s.storage.GetAll(ctx)
+	return s.storageCRUD.GetAll(ctx)
 }
 
 func (s *Service) Update(ctx context.Context, t *model.Transaction) error {
 	if t.ID <= 0 {
 		return errors.New("invalid id")
 	}
-	return s.storage.Update(ctx, t)
+	return s.storageCRUD.Update(ctx, t)
 }
 
 func (s *Service) Delete(ctx context.Context, id int) error {
 	if id <= 0 {
 		return errors.New("invalid id")
 	}
-	return s.storage.Delete(ctx, id)
+	return s.storageCRUD.Delete(ctx, id)
 }
 
 func (s *Service) GetSum(ctx context.Context, from, to time.Time) (int64, error) {
-	return s.storage.GetSum(ctx, from, to)
+	return s.storageAnalytics.GetSum(ctx, from, to)
 }
 
 func (s *Service) GetAvg(ctx context.Context, from, to time.Time) (float64, error) {
-	return s.storage.GetAvg(ctx, from, to)
+	return s.storageAnalytics.GetAvg(ctx, from, to)
 }
 
 func (s *Service) GetCount(ctx context.Context, from, to time.Time) (int64, error) {
-	return s.storage.GetCount(ctx, from, to)
+	return s.storageAnalytics.GetCount(ctx, from, to)
 }
 
 func (s *Service) GetMedian(ctx context.Context, from, to time.Time) (float64, error) {
-	return s.storage.GetMedian(ctx, from, to)
+	return s.storageAnalytics.GetMedian(ctx, from, to)
 }
 
 func (s *Service) GetPercentile90(ctx context.Context, from, to time.Time) (float64, error) {
-	return s.storage.GetPercentile90(ctx, from, to)
+	return s.storageAnalytics.GetPercentile90(ctx, from, to)
 }
