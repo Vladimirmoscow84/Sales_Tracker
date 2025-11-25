@@ -4,7 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/Vladimirmoscow84/Sales_Tracker/internal/middleware"
 	"github.com/Vladimirmoscow84/Sales_Tracker/internal/model"
+	"github.com/gin-gonic/gin"
 	"github.com/wb-go/wbf/ginext"
 )
 
@@ -39,5 +41,16 @@ func New(router *ginext.Engine, cruder transactionCRUDer, analyticGetter transac
 }
 
 func (r *Router) Routes() {
+	r.Router.Use(middleware.LoggerMiddleware())
+	r.Router.Use(middleware.CORSMiddleware())
+
+	r.Router.POST("/items", r.createTransactionHAndler)
+	r.Router.GET("/items", r.getAllTransactionsHandler)
+	r.Router.GET("/items/:id", r.getTransactionByIDHandler)
+	r.Router.PUT("items/:id", r.updateTransactionHandler)
+	r.Router.DELETE("items/:id", r.deleteTransactionHandler)
+	r.Router.GET("/analytics", r.getAnalyticsHandler)
+	r.Router.GET("/", func(c *gin.Context) { c.File("./web/index.html") })
+	r.Router.Static("/static", "./web")
 
 }
