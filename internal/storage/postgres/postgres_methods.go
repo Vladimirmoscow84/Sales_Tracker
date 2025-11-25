@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"time"
 
 	"github.com/Vladimirmoscow84/Sales_Tracker/internal/model"
 )
@@ -70,40 +71,49 @@ func (p *Postgres) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (p *Postgres) GetSum(ctx context.Context, from, to string) (int64, error) {
+func (p *Postgres) GetSum(ctx context.Context, from, to time.Time) (int64, error) {
 	query := `
         SELECT COALESCE(SUM(amount), 0)
         FROM transactions
         WHERE event_date BETWEEN $1 AND $2;
     `
-	var result int64
-	err := p.DB.GetContext(ctx, &result, query, from, to)
-	return result, err
+	var sum int64
+	err := p.DB.GetContext(ctx, &sum, query, from, to)
+	if err != nil {
+		return 0, err
+	}
+	return sum, nil
 }
 
-func (p *Postgres) GetAvg(ctx context.Context, from, to string) (float64, error) {
+func (p *Postgres) GetAvg(ctx context.Context, from, to time.Time) (float64, error) {
 	query := `
         SELECT COALESCE(AVG(amount), 0)
         FROM transactions
         WHERE event_date BETWEEN $1 AND $2;
     `
-	var result float64
-	err := p.DB.GetContext(ctx, &result, query, from, to)
-	return result, err
+	var avg float64
+	err := p.DB.GetContext(ctx, &avg, query, from, to)
+	if err != nil {
+		return 0, err
+	}
+	return avg, nil
 }
 
-func (p *Postgres) GetCount(ctx context.Context, from, to string) (int, error) {
+func (p *Postgres) GetCount(ctx context.Context, from, to time.Time) (int64, error) {
 	query := `
         SELECT COUNT(*)
         FROM transactions
         WHERE event_date BETWEEN $1 AND $2;
     `
-	var result int
-	err := p.DB.GetContext(ctx, &result, query, from, to)
-	return result, err
+	var count int64
+	err := p.DB.GetContext(ctx, &count, query, from, to)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
-func (p *Postgres) GetMedian(ctx context.Context, from, to string) (float64, error) {
+func (p *Postgres) GetMedian(ctx context.Context, from, to time.Time) (float64, error) {
 	query := `
         SELECT COALESCE(
             percentile_cont(0.5) WITHIN GROUP (ORDER BY amount),
@@ -112,12 +122,15 @@ func (p *Postgres) GetMedian(ctx context.Context, from, to string) (float64, err
         FROM transactions
         WHERE event_date BETWEEN $1 AND $2;
     `
-	var result float64
-	err := p.DB.GetContext(ctx, &result, query, from, to)
-	return result, err
+	var median float64
+	err := p.DB.GetContext(ctx, &median, query, from, to)
+	if err != nil {
+		return 0, err
+	}
+	return median, nil
 }
 
-func (p *Postgres) GetPercentile90(ctx context.Context, from, to string) (float64, error) {
+func (p *Postgres) GetPercentile90(ctx context.Context, from, to time.Time) (float64, error) {
 	query := `
         SELECT COALESCE(
             percentile_cont(0.9) WITHIN GROUP (ORDER BY amount),
@@ -128,5 +141,8 @@ func (p *Postgres) GetPercentile90(ctx context.Context, from, to string) (float6
     `
 	var result float64
 	err := p.DB.GetContext(ctx, &result, query, from, to)
-	return result, err
+	if err != nil {
+		return 0, err
+	}
+	return result, nil
 }
