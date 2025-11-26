@@ -56,7 +56,13 @@ func (r *Router) Routes() {
 	r.Router.GET("/items/:id", r.getTransactionByIDHandler)
 	r.Router.PUT("/items/:id", r.updateTransactionHandler)
 	r.Router.DELETE("/items/:id", r.deleteTransactionHandler)
+	r.Router.GET("/items/period", r.getTransactionsByPeriodHandler)
+	r.Router.GET("/items/sorted", r.getAllSortedHandler)
 	r.Router.GET("/analytics", r.getAnalyticsHandler)
+	r.Router.GET("/analytics/day", r.groupByDayHandler)
+	r.Router.GET("/analytics/week", r.groupByWeekHandler)
+	r.Router.GET("/analytics/month", r.groupByMonthHandler)
+	r.Router.GET("/analytics/category", r.groupByCategoryHandler)
 	r.Router.GET("/", func(c *gin.Context) { c.File("./web/index.html") })
 	r.Router.Static("/static", "./web")
 
