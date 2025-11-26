@@ -40,7 +40,7 @@ func (p *Postgres) GetByID(ctx context.Context, id int) (*model.Transaction, err
 
 func (p *Postgres) GetAll(ctx context.Context) ([]model.Transaction, error) {
 	query := `
-        SELECT SELECT  * FROM transactions
+        SELECT * FROM transactions
         ORDER BY event_date DESC;
     `
 	var list []model.Transaction

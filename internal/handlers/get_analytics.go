@@ -11,7 +11,8 @@ func (r *Router) getAnalyticsHandler(c *ginext.Context) {
 	fromStr := c.Query("from")
 	toStr := c.Query("to")
 
-	var from, to time.Time
+	var from time.Time = time.Time{} // минимальная дата, если не передана
+	var to time.Time = time.Now()    // текущая дата, если не передана
 	var err error
 
 	if fromStr != "" {

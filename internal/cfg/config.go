@@ -16,7 +16,7 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	cfg := &Config{
-		DatabaseURI:   os.Getenv("DTABASE_URI"),
+		DatabaseURI:   os.Getenv("DATABASE_URI"),
 		ServerAddress: os.Getenv("SERVER_ADDRESS"),
 	}
 	if cfg.DatabaseURI == "" {
