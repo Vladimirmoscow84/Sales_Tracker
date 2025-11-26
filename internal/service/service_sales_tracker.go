@@ -8,6 +8,7 @@ import (
 	"github.com/Vladimirmoscow84/Sales_Tracker/internal/model"
 )
 
+// CRUD methods
 func (s *Service) Create(ctx context.Context, t *model.Transaction) (int, error) {
 	if t.Amount <= 0 {
 		return 0, errors.New("amount must be > 0")
@@ -43,6 +44,15 @@ func (s *Service) Delete(ctx context.Context, id int) error {
 	return s.storageCRUD.Delete(ctx, id)
 }
 
+func (s *Service) GetByPeriod(ctx context.Context, from, to time.Time) ([]model.Transaction, error) {
+	return s.storageCRUD.GetByPeriod(ctx, from, to)
+}
+
+func (s *Service) GetAllSorted(ctx context.Context, sortField, order string) ([]model.Transaction, error) {
+	return s.storageCRUD.GetAllSorted(ctx, sortField, order)
+}
+
+// Analytics methods
 func (s *Service) GetSum(ctx context.Context, from, to time.Time) (int64, error) {
 	return s.storageAnalytics.GetSum(ctx, from, to)
 }
@@ -61,4 +71,22 @@ func (s *Service) GetMedian(ctx context.Context, from, to time.Time) (float64, e
 
 func (s *Service) GetPercentile90(ctx context.Context, from, to time.Time) (float64, error) {
 	return s.storageAnalytics.GetPercentile90(ctx, from, to)
+}
+
+// Groups By and perid mthods
+
+func (s *Service) GroupByDay(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.storageAnalytics.GroupByDay(ctx, from, to)
+}
+
+func (s *Service) GroupByWeek(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.storageAnalytics.GroupByWeek(ctx, from, to)
+}
+
+func (s *Service) GroupByMonth(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.storageAnalytics.GroupByMonth(ctx, from, to)
+}
+
+func (s *Service) GroupByCategory(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.storageAnalytics.GroupByCategory(ctx, from, to)
 }

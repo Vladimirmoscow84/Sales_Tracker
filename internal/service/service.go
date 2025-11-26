@@ -14,6 +14,8 @@ type transactionCRUD interface {
 	GetAll(ctx context.Context) ([]model.Transaction, error)
 	Update(ctx context.Context, t *model.Transaction) error
 	Delete(ctx context.Context, id int) error
+	GetByPeriod(ctx context.Context, from, to time.Time) ([]model.Transaction, error)
+	GetAllSorted(ctx context.Context, sortField, order string) ([]model.Transaction, error)
 }
 
 type transactionAnalytics interface {
@@ -22,6 +24,10 @@ type transactionAnalytics interface {
 	GetCount(ctx context.Context, from, to time.Time) (int64, error)
 	GetMedian(ctx context.Context, from, to time.Time) (float64, error)
 	GetPercentile90(ctx context.Context, from, to time.Time) (float64, error)
+	GroupByDay(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByWeek(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByMonth(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByCategory(ctx context.Context, from, to time.Time) (map[string]int64, error)
 }
 
 type Service struct {

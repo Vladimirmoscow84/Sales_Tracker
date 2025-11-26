@@ -15,11 +15,19 @@ type transactionRepo interface {
 	Update(ctx context.Context, t *model.Transaction) error
 	Delete(ctx context.Context, id int) error
 
+	GetByPeriod(ctx context.Context, from, to time.Time) ([]model.Transaction, error)
+	GetAllSorted(ctx context.Context, sortField, order string) ([]model.Transaction, error)
+
 	GetSum(ctx context.Context, from, to time.Time) (int64, error)
 	GetAvg(ctx context.Context, from, to time.Time) (float64, error)
 	GetCount(ctx context.Context, from, to time.Time) (int64, error)
 	GetMedian(ctx context.Context, from, to time.Time) (float64, error)
 	GetPercentile90(ctx context.Context, from, to time.Time) (float64, error)
+
+	GroupByDay(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByWeek(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByMonth(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByCategory(ctx context.Context, from, to time.Time) (map[string]int64, error)
 }
 
 type Storage struct {
@@ -73,4 +81,30 @@ func (s *Storage) GetMedian(ctx context.Context, from, to time.Time) (float64, e
 
 func (s *Storage) GetPercentile90(ctx context.Context, from, to time.Time) (float64, error) {
 	return s.transactions.GetPercentile90(ctx, from, to)
+}
+
+func (s *Storage) GetByPeriod(ctx context.Context, from, to time.Time) ([]model.Transaction, error) {
+	return s.transactions.GetByPeriod(ctx, from, to)
+}
+
+func (s *Storage) GetAllSorted(ctx context.Context, sortField, order string) ([]model.Transaction, error) {
+	return s.transactions.GetAllSorted(ctx, sortField, order)
+}
+
+func (s *Storage) GroupByDay(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.transactions.GroupByDay(ctx, from, to)
+}
+
+func (s *Storage) GroupByWeek(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.transactions.GroupByWeek(ctx, from, to)
+}
+
+func (s *Storage) GroupByMonth(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.transactions.GroupByMonth(ctx, from, to)
+
+}
+
+func (s *Storage) GroupByCategory(ctx context.Context, from, to time.Time) (map[string]int64, error) {
+	return s.transactions.GroupByCategory(ctx, from, to)
+
 }

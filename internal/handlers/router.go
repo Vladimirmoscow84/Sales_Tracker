@@ -16,6 +16,8 @@ type transactionCRUDer interface {
 	GetAll(ctx context.Context) ([]model.Transaction, error)
 	Update(ctx context.Context, t *model.Transaction) error
 	Delete(ctx context.Context, id int) error
+	GetByPeriod(ctx context.Context, from, to time.Time) ([]model.Transaction, error)
+	GetAllSorted(ctx context.Context, sortField, order string) ([]model.Transaction, error)
 }
 
 type transactionAnalyticsGetter interface {
@@ -24,6 +26,10 @@ type transactionAnalyticsGetter interface {
 	GetCount(ctx context.Context, from, to time.Time) (int64, error)
 	GetMedian(ctx context.Context, from, to time.Time) (float64, error)
 	GetPercentile90(ctx context.Context, from, to time.Time) (float64, error)
+	GroupByDay(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByWeek(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByMonth(ctx context.Context, from, to time.Time) (map[string]int64, error)
+	GroupByCategory(ctx context.Context, from, to time.Time) (map[string]int64, error)
 }
 
 type Router struct {
@@ -41,14 +47,15 @@ func New(router *ginext.Engine, cruder transactionCRUDer, analyticGetter transac
 }
 
 func (r *Router) Routes() {
-	r.Router.Use(middleware.LoggerMiddleware())
-	r.Router.Use(middleware.CORSMiddleware())
 
-	r.Router.POST("/items", r.createTransactionHAndler)
+	r.Router.Use(middleware.CORSMiddleware())
+	r.Router.Use(middleware.LoggerMiddleware())
+
+	r.Router.POST("/items", r.createTransactionHandler)
 	r.Router.GET("/items", r.getAllTransactionsHandler)
 	r.Router.GET("/items/:id", r.getTransactionByIDHandler)
-	r.Router.PUT("items/:id", r.updateTransactionHandler)
-	r.Router.DELETE("items/:id", r.deleteTransactionHandler)
+	r.Router.PUT("/items/:id", r.updateTransactionHandler)
+	r.Router.DELETE("/items/:id", r.deleteTransactionHandler)
 	r.Router.GET("/analytics", r.getAnalyticsHandler)
 	r.Router.GET("/", func(c *gin.Context) { c.File("./web/index.html") })
 	r.Router.Static("/static", "./web")

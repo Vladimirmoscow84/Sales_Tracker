@@ -8,7 +8,7 @@ import (
 	"github.com/wb-go/wbf/ginext"
 )
 
-func (r *Router) createTransactionHAndler(c *gin.Context) {
+func (r *Router) createTransactionHandler(c *gin.Context) {
 	var t model.Transaction
 	err := c.ShouldBindJSON(&t)
 	if err != nil {
